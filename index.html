@@ -25,7 +25,7 @@
                 <input type="password" id="pass1" placeholder="הקלד סיסמה ראשונה..." 
                     class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500 transition">
             </div>
-            <button id="btn-step1" 
+            <button onclick="verifyStep1()" 
                 class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-blue-600/30 cursor-pointer">
                 המשך לשלב הבא <i class="fa-solid fa-arrow-left mr-2"></i>
             </button>
@@ -41,11 +41,11 @@
                 <input type="password" id="pass2" placeholder="הקלד סיסמה שנייה..." 
                     class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-slate-500 transition">
             </div>
-            <button id="btn-step2" 
+            <button onclick="verifyStep2()" 
                 class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30 cursor-pointer">
                 כניסה למערכת <i class="fa-solid fa-lock-open mr-2"></i>
             </button>
-            <button id="btn-reset1" class="w-full text-slate-400 text-sm hover:text-white py-1 cursor-pointer">
+            <button onclick="resetAuth()" class="w-full text-slate-400 text-sm hover:text-white py-1 cursor-pointer">
                 חזור להתחלה
             </button>
         </div>
@@ -64,7 +64,7 @@
                 <div class="flex gap-2">
                     <input type="url" id="external-link" placeholder="הכנס כתובת קישור (https://...)" 
                         class="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <button id="btn-open-link" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer">
+                    <button onclick="openLink()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer">
                         מעבר <i class="fa-solid fa-external-link-alt mr-1"></i>
                     </button>
                 </div>
@@ -77,9 +77,9 @@
                     עוזר חכם (Gemini API)
                 </h3>
                 <div class="flex gap-2">
-                    <input type="text" id="ai-prompt-input" placeholder="שאל שאלה את הבינה המלאכותית או בקש עזרה..." 
+                    <input type="text" id="ai-prompt-input" placeholder="שאל שאלה את הבינה المלאכותית או בקש עזרה..." 
                         class="flex-1 px-3 py-2 bg-slate-900 border border-purple-700/50 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500">
-                    <button id="ai-btn" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-purple-600/20 cursor-pointer">
+                    <button onclick="askGemini()" id="ai-btn" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-purple-600/20 cursor-pointer">
                         <span>שאל</span>
                     </button>
                 </div>
@@ -96,7 +96,7 @@
                     <div class="flex gap-2">
                         <input type="text" id="alert-message-input" placeholder="כתוב הודעה שכולם יראו..." 
                             class="flex-1 px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-rose-500 placeholder-slate-500">
-                        <button id="btn-send-message" class="bg-rose-600 hover:bg-rose-500 px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-rose-600/30 cursor-pointer">
+                        <button onclick="sendAlertMessage()" class="bg-rose-600 hover:bg-rose-500 px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-rose-600/30 cursor-pointer">
                             <i class="fa-solid fa-paper-plane"></i>
                             <span>שלח</span>
                         </button>
@@ -111,14 +111,14 @@
                         <i class="fa-solid fa-tower-broadcast text-rose-400 animate-pulse"></i>
                         יומן צ'אט ואיתותים בזמן אמת
                     </h3>
-                    <span id="sync-status" class="text-xs text-slate-500">מחבר לשרת...</span>
+                    <span id="sync-status" class="text-xs text-slate-500">ממתין להתחברות...</span>
                 </div>
                 <div id="alerts-log" class="max-h-56 overflow-y-auto space-y-2 text-xs text-slate-300 pr-1">
-                    <p class="text-slate-500 text-center py-2">טוען נתונים מהשרת...</p>
+                    <p class="text-slate-500 text-center py-2">אין הודעות כרגע.</p>
                 </div>
             </div>
 
-            <button id="btn-reset2" class="w-full text-slate-400 text-xs hover:text-white py-1 text-center block cursor-pointer">
+            <button onclick="resetAuth()" class="w-full text-slate-400 text-xs hover:text-white py-1 text-center block cursor-pointer">
                 התנתק מהמערכת
             </button>
         </div>
@@ -131,147 +131,50 @@
             <div id="modal-icon" class="text-4xl"></div>
             <h3 id="modal-title" class="text-lg font-bold"></h3>
             <p id="modal-message" class="text-sm text-slate-300"></p>
-            <button id="btn-close-modal" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm font-medium transition cursor-pointer">
+            <button onclick="closeModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm font-medium transition cursor-pointer">
                 אישור
             </button>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-security-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "demo-key",
-            authDomain: "demo.firebaseapp.com",
-            projectId: "demo-project"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        let currentUser = null;
+    <!-- סקריפט בסיסי ועובד בוודאות ללא שום תלויות -->
+    <script>
         const P1 = "12עוז12";
         const P2 = "12אבישי34";
 
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                currentUser = auth.currentUser;
-                const userInfoEl = document.getElementById('user-info-display');
-                if (userInfoEl) {
-                    userInfoEl.textContent = `מזהה משתמש: ${currentUser ? currentUser.uid.substring(0, 8) + '...' : 'אורח'}`;
-                }
-                setupRealtimeAlerts();
-            } catch (error) {
-                console.error("Auth error:", error);
-                showModal("שגיאת חיבור", "לא ניתן להתחבר לשרת המאובטח.", "error");
-            }
-        }
-
-        // האזנה איתנה לטעינת הדף וקישור האירועים
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeAppListeners);
-        } else {
-            initializeAppListeners();
-        }
-
-        function initializeAppListeners() {
-            initAuth();
-
-            const btnStep1 = document.getElementById('btn-step1');
-            const btnStep2 = document.getElementById('btn-step2');
-            const btnReset1 = document.getElementById('btn-reset1');
-            const btnReset2 = document.getElementById('btn-reset2');
-            const btnOpenLink = document.getElementById('btn-open-link');
-            const aiBtn = document.getElementById('ai-btn');
-            const btnSendMessage = document.getElementById('btn-send-message');
-            const btnCloseModal = document.getElementById('btn-close-modal');
-
-            const pass1 = document.getElementById('pass1');
-            const pass2 = document.getElementById('pass2');
-            const aiPrompt = document.getElementById('ai-prompt-input');
-            const alertMsg = document.getElementById('alert-message-input');
-
-            if (btnStep1) btnStep1.addEventListener('click', verifyStep1);
-            if (btnStep2) btnStep2.addEventListener('click', verifyStep2);
-            if (btnReset1) btnReset1.addEventListener('click', resetAuth);
-            if (btnReset2) btnReset2.addEventListener('click', resetAuth);
-            if (btnOpenLink) btnOpenLink.addEventListener('click', openLink);
-            if (aiBtn) aiBtn.addEventListener('click', askGemini);
-            if (btnSendMessage) btnSendMessage.addEventListener('click', sendAlertMessage);
-            if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
-
-            if (pass1) {
-                pass1.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') verifyStep1();
-                });
-            }
-            if (pass2) {
-                pass2.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') verifyStep2();
-                });
-            }
-            if (aiPrompt) {
-                aiPrompt.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') askGemini();
-                });
-            }
-            if (alertMsg) {
-                alertMsg.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') sendAlertMessage();
-                });
-            }
-        }
-
         function verifyStep1() {
-            const pass1Input = document.getElementById('pass1');
-            if (!pass1Input) return;
-            const val = pass1Input.value;
-            if (val === P1) {
+            const pass1 = document.getElementById('pass1').value;
+            if (pass1 === P1) {
                 document.getElementById('step1-container').classList.add('hidden');
                 document.getElementById('step2-container').classList.remove('hidden');
-                const pass2Input = document.getElementById('pass2');
-                if (pass2Input) pass2Input.focus();
+                document.getElementById('pass2').focus();
             } else {
                 showModal('שגיאת אבטחה', 'סיסמה ראשונה שגויה, נסה שוב.', 'error');
             }
         }
 
         function verifyStep2() {
-            const pass2Input = document.getElementById('pass2');
-            if (!pass2Input) return;
-            const val = pass2Input.value;
-            if (val === P2) {
+            const pass2 = document.getElementById('pass2').value;
+            if (pass2 === P2) {
                 document.getElementById('step2-container').classList.add('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
+                initFirebaseModule();
             } else {
                 showModal('שגיאת אבטחה', 'סיסמה שנייה שגויה, נסה שוב.', 'error');
             }
         }
 
         function resetAuth() {
-            const pass1Input = document.getElementById('pass1');
-            const pass2Input = document.getElementById('pass2');
-            if (pass1Input) pass1Input.value = '';
-            if (pass2Input) pass2Input.value = '';
+            document.getElementById('pass1').value = '';
+            document.getElementById('pass2').value = '';
             document.getElementById('main-content').classList.add('hidden');
             document.getElementById('step2-container').classList.add('hidden');
             document.getElementById('step1-container').classList.remove('hidden');
-            if (pass1Input) pass1Input.focus();
+            document.getElementById('pass1').focus();
         }
 
         function openLink() {
-            const linkInput = document.getElementById('external-link');
-            if (!linkInput) return;
-            let url = linkInput.value.trim();
+            let url = document.getElementById('external-link').value.trim();
             if (!url) {
                 showModal('שגיאה', 'אנא הזן כתובת קישור תקינה.', 'error');
                 return;
@@ -282,206 +185,189 @@
             window.open(url, '_blank');
         }
 
-        async function askGemini() {
-            const promptInput = document.getElementById('ai-prompt-input');
-            if (!promptInput) return;
-            const promptText = promptInput.value.trim();
-            if (!promptText) {
-                showModal('שגיאה', 'אנא הזן שאלה או טקסט עבור הבינה המלאכותית.', 'error');
+        function showModal(title, message, type) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-icon').innerHTML = type === 'error' ? 
+                '<i class="fa-solid fa-circle-xmark text-rose-500"></i>' : 
+                '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // האזנה למקש Enter בתיבות הטקסט
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('pass1').addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyStep1(); });
+            document.getElementById('pass2').addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyStep2(); });
+            document.getElementById('ai-prompt-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') askGemini(); });
+            document.getElementById('alert-message-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAlertMessage(); });
+        });
+
+        // פונקציה חליפית לשליחת הודעות מקומית אם אין חיבור שרת
+        let localAlerts = [];
+        window.sendAlertMessage = function() {
+            if (window.firebaseSendAlert) {
+                window.firebaseSendAlert();
+            } else {
+                const input = document.getElementById('alert-message-input');
+                const text = input.value.trim();
+                if (!text) return;
+                
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('he-IL');
+                localAlerts.unshift({ senderId: 'מקומי', timestamp: timeString, message: text, id: Date.now() });
+                input.value = '';
+                renderLocalAlerts();
+            }
+        };
+
+        window.deleteAlert = function(id) {
+            if (window.firebaseDeleteAlert) {
+                window.firebaseDeleteAlert(id);
+            } else {
+                localAlerts = localAlerts.filter(a => a.id !== id);
+                renderLocalAlerts();
+            }
+        };
+
+        function renderLocalAlerts() {
+            const log = document.getElementById('alerts-log');
+            if (localAlerts.length === 0) {
+                log.innerHTML = '<p class="text-slate-500 text-center py-2">אין הודעות כרגע.</p>';
                 return;
             }
+            log.innerHTML = localAlerts.map(alert => `
+                <div class="bg-slate-800 border border-slate-700 rounded-lg p-3 flex flex-col gap-1">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-rose-400 text-xs"><i class="fa-solid fa-user-circle ml-1"></i> משתמש: ${alert.senderId}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-500 text-[10px]">${alert.timestamp}</span>
+                            <button onclick="deleteAlert(${alert.id})" class="text-rose-400 hover:text-rose-300 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-slate-200 text-xs bg-slate-900/60 p-2 rounded border border-slate-700/50 break-words">${alert.message}</p>
+                </div>
+            `).join('');
+        }
+
+        // Gemini AI Call
+        async function askGemini() {
+            const promptInput = document.getElementById('ai-prompt-input');
+            const promptText = promptInput.value.trim();
+            if (!promptText) return;
 
             const aiBtn = document.getElementById('ai-btn');
             const responseBox = document.getElementById('ai-response-box');
             const responseText = document.getElementById('ai-response-text');
 
             aiBtn.disabled = true;
-            aiBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i>';
             responseBox.classList.remove('hidden');
-            responseText.textContent = 'מעבד שאלה באמצעות Gemini...';
+            responseText.textContent = 'מעבד שאלה...';
 
             try {
-                const systemPrompt = "אתה עוזר חכם ומקצועי במערכת אבטחה וצ'אט שיתופית. ענה בעברית בצורה ברורה ותמציתית.";
                 const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
                 const payload = {
                     contents: [{ parts: [{ text: promptText }] }],
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    }
+                    systemInstruction: { parts: [{ text: "ענה בעברית תמציתית." }] }
                 };
 
-                let response = null;
-                for (let attempt = 0; attempt < 3; attempt++) {
-                    try {
-                        response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        if (response.ok) break;
-                    } catch (e) {
-                        if (attempt === 2) throw e;
-                        await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
-                    }
-                }
-
-                if (!response || !response.ok) {
-                    throw new Error('תקשורת עם השרת נכשלה');
-                }
-
-                const result = await response.json();
-                const candidate = result.candidates?.[0];
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    responseText.textContent = candidate.content.parts[0].text;
-                } else {
-                    responseText.textContent = 'לא התקבלה תשובה תקינה מהמודל.';
-                }
+                const res = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const data = await res.json();
+                responseText.textContent = data.candidates?.[0]?.content?.parts?.[0]?.text || 'אין תשובה.';
             } catch (err) {
-                console.error("Gemini API error:", err);
-                responseText.textContent = 'אירעה שגיאה בפנייה ל-Gemini API.';
+                responseText.textContent = 'שגיאה בפנייה ל-AI.';
             } finally {
                 aiBtn.disabled = false;
-                aiBtn.innerHTML = '<span>שאל</span>';
             }
         }
+    </script>
 
-        async function sendAlertMessage() {
-            if (!auth.currentUser) {
-                showModal('שגיאה', 'טרם הושלם החיבור לשרת.', 'error');
-                return;
-            }
-            const messageInput = document.getElementById('alert-message-input');
-            if (!messageInput) return;
-            const messageText = messageInput.value.trim();
-            
-            if (!messageText) {
-                showModal('שגיאה', 'אנא הזן הודעה או איתות לצ\'אט.', 'error');
-                return;
-            }
+    <!-- טעינת מודול Firebase רק באופן מוגן כדי למנוע קריסת דפדפן -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        window.initFirebaseModule = async function() {
             try {
-                const alertsRef = collection(db, 'artifacts', appId, 'public', 'data', 'emergency_signals');
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('he-IL') + ' ' + now.toLocaleDateString('he-IL');
+                if (typeof __firebase_config === 'undefined') {
+                    document.getElementById('sync-status').textContent = 'מצב מקומי (ללא ענן)';
+                    return;
+                }
+
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-security-app';
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                const auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                const currentUser = auth.currentUser;
+                document.getElementById('user-info-display').textContent = `מזהה משתמש: ${currentUser ? currentUser.uid.substring(0, 8) + '...' : 'אורח'}`;
                 
-                await addDoc(alertsRef, {
-                    senderId: auth.currentUser.uid.substring(0, 6),
-                    timestamp: timeString,
-                    rawTime: Date.now(),
-                    message: messageText
-                });
-
-                messageInput.value = '';
-            } catch (err) {
-                console.error("Error sending message:", err);
-                showModal('שגיאה', 'שליחת ההודעה נכשלה.', 'error');
-            }
-        }
-
-        window.deleteAlert = async function(alertId) {
-            try {
-                const alertDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'emergency_signals', alertId);
-                await deleteDoc(alertDocRef);
-            } catch (err) {
-                console.error("Error deleting message:", err);
-                showModal('שגיאה', 'מחיקת ההודעה נכשלה.', 'error');
-            }
-        };
-
-        function setupRealtimeAlerts() {
-            try {
                 const alertsRef = collection(db, 'artifacts', appId, 'public', 'data', 'emergency_signals');
-                const q = query(alertsRef);
+                
+                window.firebaseSendAlert = async function() {
+                    const messageInput = document.getElementById('alert-message-input');
+                    const messageText = messageInput.value.trim();
+                    if (!messageText) return;
 
-                onSnapshot(q, (snapshot) => {
-                    const logContainer = document.getElementById('alerts-log');
-                    if (!logContainer) return;
-                    logContainer.innerHTML = '';
-                    
-                    const syncStatus = document.getElementById('sync-status');
-                    if (syncStatus) {
-                        syncStatus.textContent = 'מסונכרן בזמן אמת';
-                        syncStatus.className = 'text-xs text-emerald-400';
-                    }
+                    const now = new Date();
+                    await addDoc(alertsRef, {
+                        senderId: currentUser.uid.substring(0, 6),
+                        timestamp: now.toLocaleTimeString('he-IL') + ' ' + now.toLocaleDateString('he-IL'),
+                        rawTime: Date.now(),
+                        message: messageText
+                    });
+                    messageInput.value = '';
+                };
 
-                    if (snapshot.empty) {
-                        logContainer.innerHTML = '<p class="text-slate-500 text-center py-2">אין הודעות או איתותים בצ\'אט כרגע.</p>';
+                window.firebaseDeleteAlert = async function(alertId) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'emergency_signals', alertId));
+                };
+
+                onSnapshot(query(alertsRef), (snapshot) => {
+                    document.getElementById('sync-status').textContent = 'מסונכרן בענן בזמן אמת';
+                    document.getElementById('sync-status').className = 'text-xs text-emerald-400';
+
+                    let docsList = [];
+                    snapshot.forEach(docSnap => docsList.push({ id: docSnap.id, ...docSnap.data() }));
+                    docsList.sort((a, b) => (b.rawTime || 0) - (a.rawTime || 0));
+
+                    const log = document.getElementById('alerts-log');
+                    if (docsList.length === 0) {
+                        log.innerHTML = '<p class="text-slate-500 text-center py-2">אין הודעות כרגע.</p>';
                         return;
                     }
 
-                    let docsList = [];
-                    snapshot.forEach(docSnap => {
-                        docsList.push({ id: docSnap.id, ...docSnap.data() });
-                    });
-
-                    docsList.sort((a, b) => (b.rawTime || 0) - (a.rawTime || 0));
-
-                    docsList.forEach(alert => {
-                        const item = document.createElement('div');
-                        item.className = 'bg-slate-800 border border-slate-700 rounded-lg p-3 flex flex-col gap-1';
-                        item.innerHTML = `
+                    log.innerHTML = docsList.map(alert => `
+                        <div class="bg-slate-800 border border-slate-700 rounded-lg p-3 flex flex-col gap-1">
                             <div class="flex items-center justify-between">
+                                <span class="font-bold text-rose-400 text-xs"><i class="fa-solid fa-user-circle ml-1"></i> משתמש: ${alert.senderId || 'לא ידוע'}</span>
                                 <div class="flex items-center gap-2">
-                                    <span class="font-bold text-rose-400 text-xs"><i class="fa-solid fa-user-circle ml-1"></i> משתמש: ${alert.senderId || 'לא ידוע'}</span>
                                     <span class="text-slate-500 text-[10px]">${alert.timestamp || ''}</span>
+                                    <button onclick="deleteAlert('${alert.id}')" class="text-rose-400 hover:text-rose-300 p-1"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
-                                <button onclick="window.deleteAlert('${alert.id}')" title="מחק הודעה" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 p-1 rounded transition text-xs cursor-pointer">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
                             </div>
-                            <p class="text-slate-200 text-xs bg-slate-900/60 p-2 rounded border border-slate-700/50 break-words">${escapeHtml(alert.message || '')}</p>
-                        `;
-                        logContainer.appendChild(item);
-                    });
-                }, (error) => {
-                    console.error("Snapshot error:", error);
-                    const syncStatus = document.getElementById('sync-status');
-                    if (syncStatus) {
-                        syncStatus.textContent = 'שגיאת סנכרון';
-                        syncStatus.className = 'text-xs text-rose-400';
-                    }
+                            <p class="text-slate-200 text-xs bg-slate-900/60 p-2 rounded border border-slate-700/50 break-words">${alert.message || ''}</p>
+                        </div>
+                    `).join('');
                 });
+
             } catch (e) {
-                console.error("Error setting up snapshot:", e);
+                console.error("Firebase init failed:", e);
+                document.getElementById('sync-status').textContent = 'מצב מקומי';
             }
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-
-        function showModal(title, message, type) {
-            const modal = document.getElementById('custom-modal');
-            const titleEl = document.getElementById('modal-title');
-            const msgEl = document.getElementById('modal-message');
-            const iconEl = document.getElementById('modal-icon');
-
-            if (!modal) return;
-            titleEl.textContent = title;
-            msgEl.textContent = message;
-
-            if (type === 'error') {
-                iconEl.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
-            } else {
-                iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('custom-modal');
-            if (modal) modal.classList.add('hidden');
-        }
+        };
     </script>
 </body>
 </html>
