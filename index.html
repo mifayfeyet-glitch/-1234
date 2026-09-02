@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת אבטחה, צ'אט שיתופי ובינה מלאכותית</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Heebo', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-xl bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+        
+        <!-- שלב 1: אימות סיסמה ראשונה -->
+        <div id="step1-container" class="p-6 space-y-4">
+            <div class="flex items-center space-x-2 space-x-reverse text-blue-400 font-semibold mb-2">
+                <span class="bg-blue-500/20 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                <span>הזן סיסמה ראשונה</span>
+            </div>
+            <div>
+                <input type="password" id="pass1" placeholder="הקלד סיסמה ראשונה..." 
+                    class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500 transition">
+            </div>
+            <button onclick="verifyStep1()" 
+                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-blue-600/30">
+                המשך לשלב הבא <i class="fa-solid fa-arrow-left mr-2"></i>
+            </button>
+        </div>
+
+        <!-- שלב 2: אימות סיסמה שניה -->
+        <div id="step2-container" class="p-6 space-y-4 hidden">
+            <div class="flex items-center space-x-2 space-x-reverse text-indigo-400 font-semibold mb-2">
+                <span class="bg-indigo-500/20 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                <span>הזן סיסמה שנייה</span>
+            </div>
+            <div>
+                <input type="password" id="pass2" placeholder="הקלד סיסמה שנייה..." 
+                    class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-slate-500 transition">
+            </div>
+            <button onclick="verifyStep2()" 
+                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
+                כניסה למערכת <i class="fa-solid fa-lock-open mr-2"></i>
+            </button>
+            <button onclick="resetAuth()" class="w-full text-slate-400 text-sm hover:text-white py-1">
+                חזור להתחלה
+            </button>
+        </div>
+
+        <!-- אזור ראשי לאחר כניסה -->
+        <div id="main-content" class="p-6 space-y-6 hidden">
+            <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-3xl mb-1"></i>
+                <h2 class="text-lg font-bold text-emerald-300">הזדהות עברה בהצלחה!</h2>
+                <p class="text-xs text-slate-300 mt-1" id="user-info-display">מחובר למערכת השיתופית</p>
+            </div>
+
+            <!-- קישור חיצוני -->
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-slate-300 block">קישור חיצוני למערכת / אתר:</label>
+                <div class="flex gap-2">
+                    <input type="url" id="external-link" placeholder="הכנס כתובת קישור (https://...)" 
+                        class="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="openLink()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-medium transition">
+                        מעבר <i class="fa-solid fa-external-link-alt mr-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- כלי בינה מלאכותית (Gemini API) -->
+            <div class="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 space-y-3">
+                <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+                    עוזר חכם (Gemini API)
+                </h3>
+                <div class="flex gap-2">
+                    <input type="text" id="ai-prompt-input" placeholder="שאל שאלה את הבינה המלאכותית או בקש עזרה..." 
+                        class="flex-1 px-3 py-2 bg-slate-900 border border-purple-700/50 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500">
+                    <button onclick="askGemini()" id="ai-btn" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-purple-600/20">
+                        <span>שאל</span>
+                    </button>
+                </div>
+                <div id="ai-response-box" class="bg-slate-900/80 border border-purple-500/20 rounded-lg p-3 text-xs text-purple-200 hidden">
+                    <span class="font-bold block mb-1 text-purple-300">תשובת Gemini:</span>
+                    <p id="ai-response-text" class="whitespace-pre-wrap"></p>
+                </div>
+            </div>
+
+            <!-- אזור צ'אט ואיתותים שיתופי -->
+            <div class="pt-2 border-t border-slate-700 space-y-3">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-slate-300 block">כתיבה בצ'אט השיתופי (איתות / הודעה):</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="alert-message-input" placeholder="כתוב הודעה שכולם יראו..." 
+                            class="flex-1 px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-rose-500 placeholder-slate-500">
+                        <button onclick="sendAlertMessage()" class="bg-rose-600 hover:bg-rose-500 px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-rose-600/30">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>שלח</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- יומן צ'אט ואותות -->
+            <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-tower-broadcast text-rose-400 animate-pulse"></i>
+                        יומן צ'אט ואיתותים בזמן אמת
+                    </h3>
+                    <span id="sync-status" class="text-xs text-slate-500">מחבר לשרת...</span>
+                </div>
+                <div id="alerts-log" class="max-h-56 overflow-y-auto space-y-2 text-xs text-slate-300 pr-1">
+                    <p class="text-slate-500 text-center py-2">טוען נתונים מהשרת...</p>
+                </div>
+            </div>
+
+            <button onclick="resetAuth()" class="w-full text-slate-400 text-xs hover:text-white py-1 text-center block">
+                התנתק מהמערכת
+            </button>
+        </div>
+
+    </div>
+
+    <!-- תיבת הודעות מותאמת אישית -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
+            <div id="modal-icon" class="text-4xl"></div>
+            <h3 id="modal-title" class="text-lg font-bold"></h3>
+            <p id="modal-message" class="text-sm text-slate-300"></p>
+            <button onclick="closeModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm font-medium transition">
+                אישור
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-security-app';
+        const firebaseConfig = JSON.parse(__firebase_config);
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        const P1 = "12עוז12";
+        const P2 = "12אבישי34";
+
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                currentUser = auth.currentUser;
+                document.getElementById('user-info-display').textContent = `מזהה משתמש: ${currentUser ? currentUser.uid.substring(0, 8) + '...' : 'אורח'}`;
+                setupRealtimeAlerts();
+            } catch (error) {
+                console.error("Auth error:", error);
+                showModal("שגיאת חיבור", "לא ניתן להתחבר לשרת המאובטח.", "error");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+        });
+
+        window.verifyStep1 = function() {
+            const val = document.getElementById('pass1').value;
+            if (val === P1) {
+                document.getElementById('step1-container').classList.add('hidden');
+                document.getElementById('step2-container').classList.remove('hidden');
+                document.getElementById('pass2').focus();
+            } else {
+                showModal('שגיאת אבטחה', 'סיסמה ראשונה שגויה, נסה שוב.', 'error');
+            }
+        };
+
+        window.verifyStep2 = function() {
+            const val = document.getElementById('pass2').value;
+            if (val === P2) {
+                document.getElementById('step2-container').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            } else {
+                showModal('שגיאת אבטחה', 'סיסמה שנייה שגויה, נסה שוב.', 'error');
+            }
+        };
+
+        window.resetAuth = function() {
+            document.getElementById('pass1').value = '';
+            document.getElementById('pass2').value = '';
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('step2-container').classList.add('hidden');
+            document.getElementById('step1-container').classList.remove('hidden');
+        };
+
+        window.openLink = function() {
+            let url = document.getElementById('external-link').value.trim();
+            if (!url) {
+                showModal('שגיאה', 'אנא הזן כתובת קישור תקינה.', 'error');
+                return;
+            }
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            window.open(url, '_blank');
+        };
+
+        // Integration with Gemini API
+        window.askGemini = async function() {
+            const promptInput = document.getElementById('ai-prompt-input');
+            const promptText = promptInput.value.trim();
+            if (!promptText) {
+                showModal('שגיאה', 'אנא הזן שאלה או טקסט עבור הבינה המלאכותית.', 'error');
+                return;
+            }
+
+            const aiBtn = document.getElementById('ai-btn');
+            const responseBox = document.getElementById('ai-response-box');
+            const responseText = document.getElementById('ai-response-text');
+
+            aiBtn.disabled = true;
+            aiBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i>';
+            responseBox.classList.remove('hidden');
+            responseText.textContent = 'מעבד שאלה באמצעות Gemini...';
+
+            try {
+                const systemPrompt = "אתה עוזר חכם ומקצועי במערכת אבטחה וצ'אט שיתופית. ענה בעברית בצורה ברורה ותמציתית.";
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: promptText }] }],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    }
+                };
+
+                let response = null;
+                // Exponential backoff retry loop
+                for (let attempt = 0; attempt < 3; attempt++) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.ok) break;
+                    } catch (e) {
+                        if (attempt === 2) throw e;
+                        await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error('תקשורת עם השרת נכשלה');
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    responseText.textContent = candidate.content.parts[0].text;
+                } else {
+                    responseText.textContent = 'לא התקבלה תשובה תקינה מהמודל.';
+                }
+            } catch (err) {
+                console.error("Gemini API error:", err);
+                responseText.textContent = 'אירעה שגיאה בפנייה ל-Gemini API.';
+            } finally {
+                aiBtn.disabled = false;
+                aiBtn.innerHTML = '<span>שאל</span>';
+            }
+        };
+
+        window.sendAlertMessage = async function() {
+            if (!auth.currentUser) {
+                showModal('שגיאה', 'טרם הושלם החיבור לשרת.', 'error');
+                return;
+            }
+            const messageInput = document.getElementById('alert-message-input');
+            const messageText = messageInput.value.trim();
+            
+            if (!messageText) {
+                showModal('שגיאה', 'אנא הזן הודעה או איתות לצ\'אט.', 'error');
+                return;
+            }
+
+            try {
+                const alertsRef = collection(db, 'artifacts', appId, 'public', 'data', 'emergency_signals');
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('he-IL') + ' ' + now.toLocaleDateString('he-IL');
+                
+                await addDoc(alertsRef, {
+                    senderId: auth.currentUser.uid.substring(0, 6),
+                    timestamp: timeString,
+                    rawTime: Date.now(),
+                    message: messageText
+                });
+
+                messageInput.value = '';
+            } catch (err) {
+                console.error("Error sending message:", err);
+                showModal('שגיאה', 'שליחת ההודעה נכשלה.', 'error');
+            }
+        };
+
+        window.deleteAlert = async function(alertId) {
+            try {
+                const alertDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'emergency_signals', alertId);
+                await deleteDoc(alertDocRef);
+            } catch (err) {
+                console.error("Error deleting message:", err);
+                showModal('שגיאה', 'מחיקת ההודעה נכשלה.', 'error');
+            }
+        };
+
+        function setupRealtimeAlerts() {
+            try {
+                const alertsRef = collection(db, 'artifacts', appId, 'public', 'data', 'emergency_signals');
+                const q = query(alertsRef);
+
+                onSnapshot(q, (snapshot) => {
+                    const logContainer = document.getElementById('alerts-log');
+                    logContainer.innerHTML = '';
+                    
+                    document.getElementById('sync-status').textContent = 'מסונכרן בזמן אמת';
+                    document.getElementById('sync-status').className = 'text-xs text-emerald-400';
+
+                    if (snapshot.empty) {
+                        logContainer.innerHTML = '<p class="text-slate-500 text-center py-2">אין הודעות או איתותים בצ\'אט כרגע.</p>';
+                        return;
+                    }
+
+                    let docsList = [];
+                    snapshot.forEach(docSnap => {
+                        docsList.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+
+                    docsList.sort((a, b) => (b.rawTime || 0) - (a.rawTime || 0));
+
+                    docsList.forEach(alert => {
+                        const item = document.createElement('div');
+                        item.className = 'bg-slate-800 border border-slate-700 rounded-lg p-3 flex flex-col gap-1';
+                        item.innerHTML = `
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-rose-400 text-xs"><i class="fa-solid fa-user-circle ml-1"></i> משתמש: ${alert.senderId || 'לא ידוע'}</span>
+                                    <span class="text-slate-500 text-[10px]">${alert.timestamp || ''}</span>
+                                </div>
+                                <button onclick="deleteAlert('${alert.id}')" title="מחק הודעה" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 p-1 rounded transition text-xs">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                            <p class="text-slate-200 text-xs bg-slate-900/60 p-2 rounded border border-slate-700/50 break-words">${escapeHtml(alert.message || '')}</p>
+                        `;
+                        logContainer.appendChild(item);
+                    });
+                }, (error) => {
+                    console.error("Snapshot error:", error);
+                    document.getElementById('sync-status').textContent = 'שגיאת סנכרון';
+                    document.getElementById('sync-status').className = 'text-xs text-rose-400';
+                });
+            } catch (e) {
+                console.error("Error setting up snapshot:", e);
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        window.showModal = function(title, message, type) {
+            const modal = document.getElementById('custom-modal');
+            const titleEl = document.getElementById('modal-title');
+            const msgEl = document.getElementById('modal-message');
+            const iconEl = document.getElementById('modal-icon');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            if (type === 'error') {
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+            } else {
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            }
+
+            modal.classList.remove('hidden');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        };
+    </script>
+</body>
+</html>
