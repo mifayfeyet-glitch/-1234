@@ -26,7 +26,7 @@
                     class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500 transition">
             </div>
             <button id="btn-step1" 
-                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-blue-600/30">
+                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-blue-600/30 cursor-pointer">
                 המשך לשלב הבא <i class="fa-solid fa-arrow-left mr-2"></i>
             </button>
         </div>
@@ -42,10 +42,10 @@
                     class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-slate-500 transition">
             </div>
             <button id="btn-step2" 
-                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
+                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30 cursor-pointer">
                 כניסה למערכת <i class="fa-solid fa-lock-open mr-2"></i>
             </button>
-            <button id="btn-reset1" class="w-full text-slate-400 text-sm hover:text-white py-1">
+            <button id="btn-reset1" class="w-full text-slate-400 text-sm hover:text-white py-1 cursor-pointer">
                 חזור להתחלה
             </button>
         </div>
@@ -64,7 +64,7 @@
                 <div class="flex gap-2">
                     <input type="url" id="external-link" placeholder="הכנס כתובת קישור (https://...)" 
                         class="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <button id="btn-open-link" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-medium transition">
+                    <button id="btn-open-link" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer">
                         מעבר <i class="fa-solid fa-external-link-alt mr-1"></i>
                     </button>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="flex gap-2">
                     <input type="text" id="ai-prompt-input" placeholder="שאל שאלה את הבינה המלאכותית או בקש עזרה..." 
                         class="flex-1 px-3 py-2 bg-slate-900 border border-purple-700/50 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500">
-                    <button id="ai-btn" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-purple-600/20">
+                    <button id="ai-btn" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-purple-600/20 cursor-pointer">
                         <span>שאל</span>
                     </button>
                 </div>
@@ -96,7 +96,7 @@
                     <div class="flex gap-2">
                         <input type="text" id="alert-message-input" placeholder="כתוב הודעה שכולם יראו..." 
                             class="flex-1 px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-rose-500 placeholder-slate-500">
-                        <button id="btn-send-message" class="bg-rose-600 hover:bg-rose-500 px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-rose-600/30">
+                        <button id="btn-send-message" class="bg-rose-600 hover:bg-rose-500 px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center gap-1 shadow-lg shadow-rose-600/30 cursor-pointer">
                             <i class="fa-solid fa-paper-plane"></i>
                             <span>שלח</span>
                         </button>
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <button id="btn-reset2" class="w-full text-slate-400 text-xs hover:text-white py-1 text-center block">
+            <button id="btn-reset2" class="w-full text-slate-400 text-xs hover:text-white py-1 text-center block cursor-pointer">
                 התנתק מהמערכת
             </button>
         </div>
@@ -131,7 +131,7 @@
             <div id="modal-icon" class="text-4xl"></div>
             <h3 id="modal-title" class="text-lg font-bold"></h3>
             <p id="modal-message" class="text-sm text-slate-300"></p>
-            <button id="btn-close-modal" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm font-medium transition">
+            <button id="btn-close-modal" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm font-medium transition cursor-pointer">
                 אישור
             </button>
         </div>
@@ -172,10 +172,17 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // חיבור ישיר ובטוח מיד כשהמסמך מוכן
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runSetup);
+        } else {
+            runSetup();
+        }
+
+        function runSetup() {
             initAuth();
             setupEventListeners();
-        });
+        }
 
         function setupEventListeners() {
             const btnStep1 = document.getElementById('btn-step1');
@@ -192,34 +199,38 @@
             const aiPrompt = document.getElementById('ai-prompt-input');
             const alertMsg = document.getElementById('alert-message-input');
 
-            if (btnStep1) btnStep1.addEventListener('click', verifyStep1);
-            if (btnStep2) btnStep2.addEventListener('click', verifyStep2);
-            if (btnReset1) btnReset1.addEventListener('click', resetAuth);
-            if (btnReset2) btnReset2.addEventListener('click', resetAuth);
-            if (btnOpenLink) btnOpenLink.addEventListener('click', openLink);
-            if (aiBtn) aiBtn.addEventListener('click', askGemini);
-            if (btnSendMessage) btnSendMessage.addEventListener('click', sendAlertMessage);
-            if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
+            if (btnStep1) {
+                btnStep1.onclick = verifyStep1;
+            }
+            if (btnStep2) {
+                btnStep2.onclick = verifyStep2;
+            }
+            if (btnReset1) btnReset1.onclick = resetAuth;
+            if (btnReset2) btnReset2.onclick = resetAuth;
+            if (btnOpenLink) btnOpenLink.onclick = openLink;
+            if (aiBtn) aiBtn.onclick = askGemini;
+            if (btnSendMessage) btnSendMessage.onclick = sendAlertMessage;
+            if (btnCloseModal) btnCloseModal.onclick = closeModal;
 
             if (pass1) {
-                pass1.addEventListener('keydown', (e) => {
+                pass1.onkeydown = (e) => {
                     if (e.key === 'Enter') verifyStep1();
-                });
+                };
             }
             if (pass2) {
-                pass2.addEventListener('keydown', (e) => {
+                pass2.onkeydown = (e) => {
                     if (e.key === 'Enter') verifyStep2();
-                });
+                };
             }
             if (aiPrompt) {
-                aiPrompt.addEventListener('keydown', (e) => {
+                aiPrompt.onkeydown = (e) => {
                     if (e.key === 'Enter') askGemini();
-                });
+                };
             }
             if (alertMsg) {
-                alertMsg.addEventListener('keydown', (e) => {
+                alertMsg.onkeydown = (e) => {
                     if (e.key === 'Enter') sendAlertMessage();
-                });
+                };
             }
         }
 
@@ -419,7 +430,7 @@
                                     <span class="font-bold text-rose-400 text-xs"><i class="fa-solid fa-user-circle ml-1"></i> משתמש: ${alert.senderId || 'לא ידוע'}</span>
                                     <span class="text-slate-500 text-[10px]">${alert.timestamp || ''}</span>
                                 </div>
-                                <button onclick="window.deleteAlert('${alert.id}')" title="מחק הודעה" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 p-1 rounded transition text-xs">
+                                <button onclick="window.deleteAlert('${alert.id}')" title="מחק הודעה" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 p-1 rounded transition text-xs cursor-pointer">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
