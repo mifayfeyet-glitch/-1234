@@ -15,7 +15,6 @@
 
     <div class="w-full max-w-xl bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
         
-        <!-- שלב 1: אימות סיסמה ראשונה -->
         <div id="step1-container" class="p-6 space-y-4">
             <div class="flex items-center space-x-2 space-x-reverse text-blue-400 font-semibold mb-2">
                 <span class="bg-blue-500/20 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
@@ -31,7 +30,6 @@
             </button>
         </div>
 
-        <!-- שלב 2: אימות סיסמה שניה -->
         <div id="step2-container" class="p-6 space-y-4 hidden">
             <div class="flex items-center space-x-2 space-x-reverse text-indigo-400 font-semibold mb-2">
                 <span class="bg-indigo-500/20 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
@@ -50,7 +48,6 @@
             </button>
         </div>
 
-        <!-- אזור ראשי לאחר כניסה -->
         <div id="main-content" class="p-6 space-y-6 hidden">
             <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
                 <i class="fa-solid fa-circle-check text-emerald-400 text-3xl mb-1"></i>
@@ -58,7 +55,6 @@
                 <p class="text-xs text-slate-300 mt-1" id="user-info-display">מחובר למערכת השיתופית</p>
             </div>
 
-            <!-- קישור חיצוני -->
             <div class="space-y-2">
                 <label class="text-sm font-medium text-slate-300 block">קישור חיצוני למערכת / אתר:</label>
                 <div class="flex gap-2">
@@ -70,11 +66,10 @@
                 </div>
             </div>
 
-            <!-- כלי בינה מלאכותית (Gemini API) -->
             <div class="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 space-y-3">
                 <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
                     <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
-                    עוזר חכם (Gemini API)
+                    עוזר חכם (Gemini AI)
                 </h3>
                 <div class="flex gap-2">
                     <input type="text" id="ai-prompt-input" placeholder="שאל שאלה את הבינה המלאכותית..." 
@@ -89,7 +84,6 @@
                 </div>
             </div>
 
-            <!-- אזור צ'אט ואיתותים שיתופי -->
             <div class="pt-2 border-t border-slate-700 space-y-3">
                 <div class="space-y-2">
                     <label class="text-sm font-medium text-slate-300 block">כתיבה בצ'אט השיתופי (איתות / הודעה):</label>
@@ -104,7 +98,6 @@
                 </div>
             </div>
 
-            <!-- יומן צ'אט ואותות -->
             <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-3">
                 <div class="flex items-center justify-between">
                     <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
@@ -125,7 +118,6 @@
 
     </div>
 
-    <!-- תיבת הודעות מותאמת אישית -->
     <div id="custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
             <div id="modal-icon" class="text-4xl"></div>
@@ -137,7 +129,6 @@
         </div>
     </div>
 
-    <!-- סקריפט בסיסי ועובד בוודאות ללא שום תלויות -->
     <script>
         const P1 = "12עוז12";
         const P2 = "12אבישי34";
@@ -198,7 +189,6 @@
             document.getElementById('custom-modal').classList.add('hidden');
         }
 
-        // האזנה למקש Enter בתיבות הטקסט
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pass1').addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyStep1(); });
             document.getElementById('pass2').addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyStep2(); });
@@ -206,7 +196,6 @@
             document.getElementById('alert-message-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAlertMessage(); });
         });
 
-        // פונקציה חליפית לשליחת הודעות מקומית אם אין חיבור שרת
         let localAlerts = [];
         window.sendAlertMessage = function() {
             if (window.firebaseSendAlert) {
@@ -268,37 +257,23 @@
             responseText.textContent = 'מעבד שאלה...';
 
             try {
-                // המפתח מסופק בסביבה. אם פותחים בנפרד ללא מפתח, יוצג הסבר מפורט.
-                const apiKey = typeof __gemini_api_key !== 'undefined' ? __gemini_api_key : "";
-                
-                if (!apiKey) {
-                    responseText.textContent = 'כדי להפעיל את ה-AI באינטרנט מחוץ לסביבה, יש להזין Google Gemini API Key תקין בקוד.';
-                    return;
-                }
-
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                // המפתח שהתקבל בצילום המסך
+                const apiKey = "AIzaSyD-EXAMPLE-KEY-1234567890abcdefGH";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
                 const payload = {
                     contents: [{ parts: [{ text: promptText }] }],
-                    systemInstruction: { parts: [{ text: "ענה בעברית תמציתית, ברורה ואדיבה." }] }
+                    systemInstruction: { parts: [{ text: "ענה בעברית בצורה ברורה, תמציתית ואדיבה." }] }
                 };
 
-                let response = null;
-                for (let attempt = 0; attempt < 3; attempt++) {
-                    try {
-                        response = await fetch(apiUrl, { 
-                            method: 'POST', 
-                            headers: { 'Content-Type': 'application/json' }, 
-                            body: JSON.stringify(payload) 
-                        });
-                        if (response.ok) break;
-                    } catch (e) {
-                        if (attempt === 2) throw e;
-                        await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
-                    }
-                }
+                const response = await fetch(apiUrl, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                });
 
-                if (!response || !response.ok) {
-                    throw new Error(`שגיאת שרת: ${response ? response.status : 'אין מענה'}`);
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || `שגיאת שרת (${response.status})`);
                 }
 
                 const data = await response.json();
@@ -317,7 +292,6 @@
         }
     </script>
 
-    <!-- טעינת מודול Firebase רק באופן מוגן כדי למנוע קריסת דפדפן -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
